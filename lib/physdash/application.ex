@@ -39,11 +39,10 @@ defmodule Physdash.Application do
   end
 
   def start_demo do
-    Process.sleep(5000)
+    Process.sleep(1000)
     Logger.info("Writing to display..")
     ExLCD.clear()
     ExLCD.enable(:display)
     ExLCD.write("VERB")
-    ElixirALE.GPIO.start_link(21, :output)
   end
 end
