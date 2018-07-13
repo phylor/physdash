@@ -30,7 +30,7 @@ defmodule Physdash.MixProject do
   def application do
     [
       mod: {Physdash.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :ex_lcd]
     ]
   end
 
@@ -38,7 +38,10 @@ defmodule Physdash.MixProject do
   defp deps do
     [
       {:nerves, "~> 1.0", runtime: false},
-      {:shoehorn, "~> 0.2"}
+      {:shoehorn, "~> 0.2"},
+      {:nerves_network, "~> 0.3"},
+      {:nerves_init_gadget, "~> 0.3"},
+      {:ex_lcd, "~> 0.4.0"}
     ] ++ deps(@target)
   end
 
