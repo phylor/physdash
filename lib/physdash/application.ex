@@ -34,7 +34,8 @@ defmodule Physdash.Application do
     [
       # Starts a worker by calling: Physdash.Worker.start_link(arg)
       # {Physdash.Worker, arg},
-      worker(ExLCD, [{ExLCD.HD44780, config}])
+      worker(ExLCD, [{ExLCD.HD44780, config}]),
+      {Physdash, %{}}
     ]
   end
 

@@ -48,7 +48,7 @@ defmodule Keypad do
 
   # GenServer callbacks
   def handle_call(:subscribe, from, state) do
-    new_subscribers = [elem(from, 1) | state.subscribers]
+    new_subscribers = [elem(from, 0) | state.subscribers]
 
     {:reply, :ok, %{state | subscribers: new_subscribers}}
   end
@@ -92,7 +92,7 @@ defmodule Keypad do
 
   defp notify_all(subscribers, character) do
     Enum.each subscribers, fn subscriber ->
-      GenServer.cast(subscriber, {:character, character})
+      GenServer.cast(subscriber, {:key_pressed, character})
     end
   end
 end
