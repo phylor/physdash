@@ -29,7 +29,7 @@ defmodule Physdash.Application do
   def children(_target) do
     import Supervisor.Spec, warn: false
 
-    config = %{rs: 21, en: 20, d4: 6, d5: 13, d6: 19, d7: 26, rows: 2, cols: 20, font_5x10: false }
+    config = %{rs: 18, en: 24, d4: 25, d5: 8, d6: 7, d7: 12, rows: 2, cols: 20, font_5x10: false }
 
     [
       # Starts a worker by calling: Physdash.Worker.start_link(arg)

@@ -10,7 +10,7 @@ defmodule Physdash do
   end
 
   def init(state) do
-    Keypad.start_link([25, 2, 27], [9, 10, 22, 17])
+    Keypad.start_link([5, 17, 13], [27, 26, 22, 16])
     Keypad.subscribe
 
     {:ok, state}
@@ -31,3 +31,6 @@ defmodule Physdash do
     {:noreply, new_state}
   end
 end
+# * => 0# / col2 col3
+# 0 => *# / col1 col3
+# # => *0 / col1 col2
