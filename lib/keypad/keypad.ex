@@ -1,17 +1,30 @@
 defmodule Keypad do
+  @moduledoc """
+  Helps to interface with hardware matrix keypads.
+  
+  Checks for pressed keys regularly and notifies anyone subscribed
+  to these events with the pressed key.
+  """
+
   use GenServer
   require Logger
 
-  @characters Matrix.from_list([["1", "2", "3"],
-                                ["4", "5", "6"],
-                                ["7", "8", "9"],
-                                ["*", "0", "#"]])
-
   defmodule Pin do
+    @moduledoc false
     defstruct pin: nil, type: nil, index: nil, state: :low, pid: nil
   end
 
-  def start_link(columns \\ [25, 2, 27], rows \\ [9, 10, 22, 17]) do
+  @doc """
+  Starts a process to listen for key presses.
+
+  Expects arguments `columns` and `rows` to be lists specifying the GPIO pins.
+  The pins need to be given in the same order as `characters`, which
+  needs to be a list of lists, whereas the outer list contains the rows and
+  an inner list defines the characters of a row. There is no type requirement
+  on the characters. Whatever value is given, is returned in later
+  `:key_pressed` notifications.
+  """
+  def start_link(columns, rows, characters) do
     pins =
       (columns |> Enum.with_index |> Enum.map(fn {column_pin, index} ->
       %Pin{pin: column_pin, type: :column, index: index}
@@ -23,7 +36,7 @@ defmodule Keypad do
     column_count = pins |> filter_columns |> Enum.count
     row_count = pins |> filter_rows |> Enum.count
 
-    {:ok, pid} = GenServer.start_link(__MODULE__, %{pins: pins, buttons: Matrix.with_size(column_count, row_count, :low), subscribers: []}, name: __MODULE__)
+    {:ok, pid} = GenServer.start_link(__MODULE__, %{pins: pins, buttons: Matrix.with_size(column_count, row_count, :low), characters: characters, subscribers: []}, name: __MODULE__)
     Process.send_after(pid, :check_keys, 100)
 
     {:ok, pid}
@@ -42,6 +55,13 @@ defmodule Keypad do
   end
 
   # API
+  @doc """
+  Subscribes to future key presses.
+
+  The subscriber needs to be a `GenServer` and needs to
+  handle a cast message of `{:key_pressed, character}` whereas
+  `character` is the character given when initializing the `Keypad`.
+  """
   def subscribe do
     GenServer.call(__MODULE__, :subscribe)
   end
@@ -62,7 +82,7 @@ defmodule Keypad do
         already_pressed? = state.buttons[row.index][column.index] == :high
 
         if pressed? && !already_pressed? do
-          character = @characters[row.index][column.index]
+          character = state.characters[row.index][column.index]
           notify_all(state.subscribers, character)
 
           Logger.info("character: #{character} | column: #{column.index} | row: #{row.index} | pressed")

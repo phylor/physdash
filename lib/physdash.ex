@@ -5,12 +5,17 @@ defmodule Physdash do
 
   use GenServer
 
+  @characters Matrix.from_list([["1", "2", "3"],
+                                ["4", "5", "6"],
+                                ["7", "8", "9"],
+                                ["*", "0", "#"]])
+
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{command: ""}, name: __MODULE__)
   end
 
   def init(state) do
-    Keypad.start_link([5, 17, 13], [27, 26, 22, 16])
+    Keypad.start_link([5, 17, 13], [27, 26, 22, 16], @characters)
     Keypad.subscribe
 
     {:ok, state}
