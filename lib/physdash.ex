@@ -36,6 +36,3 @@ defmodule Physdash do
     {:noreply, new_state}
   end
 end
-# * => 0# / col2 col3
-# 0 => *# / col1 col3
-# # => *0 / col1 col2
