@@ -43,3 +43,6 @@ config :nerves_network, :default,
   eth0: [
     ipv4_address_method: :dhcp
   ]
+
+config :nerves_init_gadget,
+  ssh_console_port: 22
